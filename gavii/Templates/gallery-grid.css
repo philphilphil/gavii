@@ -42,7 +42,7 @@ body {
     background: rgba(0,0,0,0.5);
 }
 
-.container:hover .overlay {
+.lightbox:hover .overlay {
     opacity: 1;
 }
 
@@ -63,15 +63,14 @@ body {
     clear: left;
 }
 
-
-
     .tz-gallery .lightbox img {
         width: 100%;
         margin-bottom: 30px;
     }
 
-        .tz-gallery .lightbox img:hover {
-        }
+    /*.tz-gallery .lightbox container:hover .overlay {
+        opacity: 1;
+    }*/
 
 @media(max-width: 768px) {
     body {
