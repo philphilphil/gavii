@@ -11,21 +11,17 @@
     <title>sitename</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
     <link href="https://fonts.googleapis.com/css?family=Droid+Sans:400,700" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.css">
     <link rel="stylesheet" href="gallery-grid.css">
 </head>
 <body>
 
     <div class="container gallery-container">
-
-
-
         <div style="float:left;">
             <h1>Site & Name</h1>
         </div>
         <div style="float:right;margin-top:10px">
             <ul class="nav">
-                <li>home</li>
+                <li><a href="#about">home</a></li>
                 <li><a href="#about">liste</a></li>
                 <li><a href="#clients">wir</a></li>
                 <li><a href="#contact">kontakt</a></li>
@@ -36,6 +32,9 @@
                 <div class="col-sm-6 col-md-4">
                     <a class="lightbox" href="images/park.jpg">
                         <img src="images/park.jpg" alt="Park">
+                        <div class="overlay">
+                            <div class="text">Hello World</div>
+                        </div>
                     </a>
                 </div>
                 <div class="col-sm-6 col-md-4">
@@ -80,11 +79,11 @@
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/baguettebox.js/1.8.1/baguetteBox.min.js"></script>
-    <script>
-        baguetteBox.run('.tz-gallery');
-    </script>
+        <div class="footer">
+            <a rel="license" href="http://creativecommons.org/licenses/by/4.0/"><img alt="Creative Commons Lizenzvertrag" style="border-width:0" src="https://i.creativecommons.org/l/by/4.0/88x31.png" /></a><br />Dieses Werk ist lizenziert unter einer <a rel="license" href="http://creativecommons.org/licenses/by/4.0/">Creative Commons Namensnennung 4.0 International Lizenz</a>.
+            <br /><br />made with gavii
+        </div>
+    </div>
 </body>
 </html>

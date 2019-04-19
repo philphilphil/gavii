@@ -29,29 +29,49 @@ body {
     font-size: 18px;
 }
 
+.overlay {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 15px;
+    width: 92%;
+    margin-bottom: 30px;
+    opacity: 0;
+    transition: .5s ease;
+    background: rgba(0,0,0,0.5);
+}
+
+.container:hover .overlay {
+    opacity: 1;
+}
+
+.text {
+    color: white;
+    font-size: 20px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    -ms-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
 .tz-gallery {
     padding: 40px;
     clear: left;
 }
 
+
+
     .tz-gallery .lightbox img {
         width: 100%;
         margin-bottom: 30px;
-        transition: 0.2s ease-in-out;
-        box-shadow: 0 2px 3px rgba(0,0,0,0.2);
     }
 
-
         .tz-gallery .lightbox img:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
         }
-
-
-.baguetteBox-button {
-    background-color: transparent !important;
-}
-
 
 @media(max-width: 768px) {
     body {
@@ -75,11 +95,23 @@ body {
     .nav li {
         display: inline-block;
         font-size: 18px;
-        color: black;
         font-family: 'Droid Sans', sans-serif;
         padding: 5px;
     }
 
-a:hover {
-    background-color: yellow;
+        .nav li a {
+            color: black;
+        }
+
+            .nav li a:hover {
+                text-decoration: underline;
+                background-color: transparent;
+            }
+
+
+/* FOOTER */
+.footer {
+    text-align: center;
+    font-size: 14px;
+    color: grey;
 }
