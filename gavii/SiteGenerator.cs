@@ -8,23 +8,29 @@ namespace gavii
     class SiteGenerator
     {
 
-        //generate 
+        private List<Page> Pages { get; set; }
+        private List<Post> Posts { get; set; }
+
+        private readonly string layoutUrl = "federundblatt/Layout/";
+        private readonly string outputUrl = "federundblatt/Output/";
+        private readonly string postsFolder = "federundblatt/posts";
+        private readonly string pagesFolder = "federundblatt/pages";
 
         public void GenerateWebsite()
         {
-            var layoutUrl = "federundblatt/Layout/";
-            var outputUrl = "federundblatt/Output/";
-            var postsFolder = "federundblatt/posts";
-
             var layoutHtml = File.ReadAllText(layoutUrl + "_Layout.html");
             var pageLayoutHtml = File.ReadAllText(layoutUrl + "_Page.html");
             var postLayoutHtml = File.ReadAllText(layoutUrl + "_Post.html");
             var galleryLayoutHtml = File.ReadAllText(layoutUrl + "_Gallery.html");
             var css = File.ReadAllText(layoutUrl + "style.css");
 
+            //gather all info needed
+            GetPages();
+            GetPosts();
+
             //generate index page with gallery
-            var indexPage = layoutHtml.Replace("{{content}}", galleryLayoutHtml);
-            using (FileStream fs = File.Create(outputUrl + "Index.html"))
+            var indexPage = layoutHtml.Replace("{{content}}", galleryLayoutHtml).Replace("{{cssForwarder}}", "");
+            using (FileStream fs = File.Create(outputUrl + "index.html"))
             {
                 Byte[] info = new UTF8Encoding(true).GetBytes(indexPage);
                 // Add some information to the file.
@@ -40,12 +46,38 @@ namespace gavii
             }
 
             //generate posts
-
-            var posts = Directory.GetDirectories(postsFolder);
-            foreach (var post in posts)
+            foreach (Post p in this.Posts)
             {
-                var postfile = File.ReadAllText(post + "/post.html");
-                
+                var pageLayout = pageLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
+                var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../");
+
+                Directory.CreateDirectory(outputUrl + "/posts/" + p.Name);
+
+                using (FileStream fs = File.Create(outputUrl + "/posts/" + p.Name + "/index.html"))
+                {
+                    Byte[] info = new UTF8Encoding(true).GetBytes(completePage);
+                    // Add some information to the file.
+                    fs.Write(info, 0, info.Length);
+                }
+            }
+
+        }
+        private void GetPages()
+        {
+            var pages = Directory.GetFiles(pagesFolder);
+            foreach (string page in pages)
+            {
+
+            }
+        }
+
+        private void GetPosts()
+        {
+            this.Posts = new List<Post>();
+            var posts = Directory.GetDirectories(postsFolder);
+            foreach (string post in posts)
+            {
+                this.Posts.Add(new Post(post));
             }
         }
     }
