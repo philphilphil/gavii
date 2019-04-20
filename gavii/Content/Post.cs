@@ -6,7 +6,7 @@ using System.Text.RegularExpressions;
 
 namespace gavii
 {
-    class Post
+    class Post : ContentReader
     {
         public string Name { get; set; }
         public DateTime Date { get; set; }
@@ -19,19 +19,9 @@ namespace gavii
             this.Name = GetFileContentWithRegex(@"(Name:)(.*)", postText[0]).Trim();
             this.Date = GetDate(postText[1].Trim());
             this.Tags = GetTags(postText[2].Trim());
-            this.Text = GetText(postText);
+            this.Text = GetText(5, postText);
         }
 
-        private string GetText(string[] postText)
-        {
-            var text = "";
-
-            for (int i = 5; i < postText.Length; i++)
-            {
-                text += postText[i];
-            }
-            return text;
-        }
 
         private List<string> GetTags(string v)
         {
@@ -53,16 +43,6 @@ namespace gavii
             return DateTime.Parse(v);
         }
 
-        private string GetFileContentWithRegex(string pattern, string text)
-        {
-            RegexOptions options = RegexOptions.Multiline;
 
-            foreach (Match m in Regex.Matches(text, pattern, options))
-            {
-                return m.Groups[2].Value;
-            }
-
-            return "";
-        }
     }
 }

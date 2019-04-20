@@ -64,10 +64,11 @@ namespace gavii
         }
         private void GetPages()
         {
+            this.Pages = new List<Page>();
             var pages = Directory.GetFiles(pagesFolder);
             foreach (string page in pages)
             {
-
+                this.Pages.Add(new Page(page));
             }
         }
 
