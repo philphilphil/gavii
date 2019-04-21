@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -13,6 +14,9 @@ namespace gavii
         public string GPS { get; set; }
         public List<string> Tags { get; set; }
         public string Text { get; set; }
+
+        public List<string> Images { get; set; }
+        public string GalleryImage { get; set; }
         public Post(string post)
         {
             var postText = File.ReadAllLines(post + "/post.html");
@@ -20,8 +24,15 @@ namespace gavii
             this.Date = GetDate(postText[1].Trim());
             this.Tags = GetTags(postText[2].Trim());
             this.Text = GetText(5, postText);
+
+            LoadImages(post);
         }
 
+        private void LoadImages(string post)
+        {
+            var di = new DirectoryInfo(post);
+            var imageFiles = di.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => s.FullName.EndsWith(".jpg") || s.FullName.EndsWith(".png")).OrderBy(x => x.Name);
+        }
 
         private List<string> GetTags(string v)
         {
