@@ -11,6 +11,8 @@ namespace gavii
             SiteGenerator sg = new SiteGenerator();
             sg.GenerateWebsite();
 
+            return;
+
             //SiteManager sm = new SiteManager();
             //sm.AddNewPage("Test");
 

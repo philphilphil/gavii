@@ -9,9 +9,9 @@ namespace gavii
 
         public Page(string page)
         {
-            var postText = File.ReadAllLines(page + "/post.html");
+            var postText = File.ReadAllLines(page);
             this.Name = GetFileContentWithRegex(@"(Name:)(.*)", postText[0]).Trim();
-            this.Text = GetText(3, postText);
+            this.Text = GetText(2, postText);
         }
     }
 }

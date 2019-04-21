@@ -28,40 +28,49 @@ namespace gavii
             GetPages();
             GetPosts();
 
-            //generate index page with gallery
+            //todo: Fill layout with links for pages. For now hardcoded in _Layout.html
+
+            //index page with gallery
             var indexPage = layoutHtml.Replace("{{content}}", galleryLayoutHtml).Replace("{{cssForwarder}}", "");
-            using (FileStream fs = File.Create(outputUrl + "index.html"))
-            {
-                Byte[] info = new UTF8Encoding(true).GetBytes(indexPage);
-                // Add some information to the file.
-                fs.Write(info, 0, info.Length);
-            }
+            WriteFile(indexPage, outputUrl + "index.html");
 
             //css
-            using (FileStream fs = File.Create(outputUrl + "style.css"))
-            {
-                Byte[] info = new UTF8Encoding(true).GetBytes(css);
-                // Add some information to the file.
-                fs.Write(info, 0, info.Length);
-            }
+            WriteFile(css, outputUrl + "style.css");
 
-            //generate posts
-            foreach (Post p in this.Posts)
+            //pages
+            foreach (var p in this.Pages)
             {
                 var pageLayout = pageLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
                 var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../");
+                string folderPath = outputUrl + p.Name;
 
-                Directory.CreateDirectory(outputUrl + "/posts/" + p.Name);
+                Directory.CreateDirectory(folderPath);
 
-                using (FileStream fs = File.Create(outputUrl + "/posts/" + p.Name + "/index.html"))
-                {
-                    Byte[] info = new UTF8Encoding(true).GetBytes(completePage);
-                    // Add some information to the file.
-                    fs.Write(info, 0, info.Length);
-                }
+                WriteFile(completePage, folderPath + "/index.html");
             }
 
+            //posts
+            foreach (Post p in this.Posts)
+            {
+                var postLayout = postLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
+                var completePost = layoutHtml.Replace("{{content}}", postLayout).Replace("{{cssForwarder}}", "../../");
+                string folderPath = outputUrl + "/posts/" + p.Name;
+
+                Directory.CreateDirectory(folderPath);
+
+                WriteFile(completePost, folderPath + "/index.html");
+            }
         }
+
+        private void WriteFile(string content, string path)
+        {
+            using (FileStream fs = File.Create(path))
+            {
+                Byte[] info = new UTF8Encoding(true).GetBytes(content);
+                fs.Write(info, 0, info.Length);
+            }
+        }
+
         private void GetPages()
         {
             this.Pages = new List<Page>();
