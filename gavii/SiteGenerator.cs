@@ -28,10 +28,33 @@ namespace gavii
             GetPages();
             GetPosts();
 
-            //todo: Fill layout with links for pages. For now hardcoded in _Layout.html
+            //todo: Fill layout with links for posts. For now hardcoded in _Layout.html
+
+            //todo: put html into _aGallery.html and add some kind of templating lang
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<div class='col-sm-6 col-md-4'>");
+            sb.Append("<a class='lightbox' href='{{PostUrl}}'>");
+            sb.Append("<img src='thumbnails/{{PostThumb}}' alt='Park'>");
+            sb.Append("<div class='overlay'>");
+            sb.Append("<div class='text'>{{Name}}</div></div></a></div>");
+
+            //generate thumbnails for gallery
+            string gallery = "";
+            foreach (Post p in this.Posts)
+            {
+                if (p.GalleryImage == null)
+                    continue;
+
+                //todo: resize
+                Directory.CreateDirectory(outputUrl + "/thumbnails/");
+                p.GalleryImage.CopyTo(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension, true);
+                gallery += sb.Replace("{{PostThumb}}", p.Name + p.GalleryImage.Extension).Replace("{{Name}}", p.Name).Replace("{{PostUrl}}", "/posts/" + p.Name);
+            }
+
+            var galleryHtml = galleryLayoutHtml.Replace("{{Images}}", gallery);
 
             //index page with gallery
-            var indexPage = layoutHtml.Replace("{{content}}", galleryLayoutHtml).Replace("{{cssForwarder}}", "");
+            var indexPage = layoutHtml.Replace("{{content}}", galleryHtml).Replace("{{cssForwarder}}", "");
             WriteFile(indexPage, outputUrl + "index.html");
 
             //css
@@ -54,6 +77,7 @@ namespace gavii
             {
                 var postLayout = postLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
                 string folderPath = outputUrl + "/posts/" + p.Name;
+                Directory.CreateDirectory(folderPath);
 
                 //images
                 if (p.GalleryImage != null)
@@ -70,14 +94,12 @@ namespace gavii
                     p.GalleryImage.CopyTo(folderPath + "/" + p.GalleryImage.Name, true);
                     p.Images.ForEach(i => i.CopyTo(folderPath + "/" + i.Name, true));
 
-                    postLayout = postLayout.Replace("{{GalleryImage}}", "<img src='"+ p.GalleryImage.Name + "' alt='" + p.Name + "'><br />\r\n");
+                    postLayout = postLayout.Replace("{{GalleryImage}}", "<img src='" + p.GalleryImage.Name + "' alt='" + p.Name + "'><br />\r\n");
 
                 }
 
                 var completePost = layoutHtml.Replace("{{content}}", postLayout).Replace("{{cssForwarder}}", "../../");
 
-
-                Directory.CreateDirectory(folderPath);
                 WriteFile(completePost, folderPath + "/index.html");
             }
         }
