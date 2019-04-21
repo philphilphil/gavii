@@ -53,11 +53,31 @@ namespace gavii
             foreach (Post p in this.Posts)
             {
                 var postLayout = postLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
-                var completePost = layoutHtml.Replace("{{content}}", postLayout).Replace("{{cssForwarder}}", "../../");
                 string folderPath = outputUrl + "/posts/" + p.Name;
 
-                Directory.CreateDirectory(folderPath);
+                //images
+                if (p.GalleryImage != null)
+                {
+                    string imgHtml = @"<img src='{{path}}' alt='" + p.Name + "'><br />\r\n";
+                    string allImages = "";
+                    foreach (var i in p.Images)
+                    {
+                        allImages += imgHtml.Replace("{{path}}", i.Name);
+                    }
 
+                    postLayout = postLayout.Replace("{{Images}}", allImages);
+
+                    p.GalleryImage.CopyTo(folderPath + "/" + p.GalleryImage.Name, true);
+                    p.Images.ForEach(i => i.CopyTo(folderPath + "/" + i.Name, true));
+
+                    postLayout = postLayout.Replace("{{GalleryImage}}", "<img src='"+ p.GalleryImage.Name + "' alt='" + p.Name + "'><br />\r\n");
+
+                }
+
+                var completePost = layoutHtml.Replace("{{content}}", postLayout).Replace("{{cssForwarder}}", "../../");
+
+
+                Directory.CreateDirectory(folderPath);
                 WriteFile(completePost, folderPath + "/index.html");
             }
         }

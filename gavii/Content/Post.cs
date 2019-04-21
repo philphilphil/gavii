@@ -14,9 +14,9 @@ namespace gavii
         public string GPS { get; set; }
         public List<string> Tags { get; set; }
         public string Text { get; set; }
+        public List<FileInfo> Images { get; set; }
+        public FileInfo GalleryImage { get; set; }
 
-        public List<string> Images { get; set; }
-        public string GalleryImage { get; set; }
         public Post(string post)
         {
             var postText = File.ReadAllLines(post + "/post.html");
@@ -31,7 +31,14 @@ namespace gavii
         private void LoadImages(string post)
         {
             var di = new DirectoryInfo(post);
-            var imageFiles = di.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => s.FullName.EndsWith(".jpg") || s.FullName.EndsWith(".png")).OrderBy(x => x.Name);
+            this.Images = di.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => s.FullName.EndsWith(".jpg") || s.FullName.EndsWith(".png")).OrderBy(x => x.Name).ToList();
+
+            if(this.Images.Count == 0)
+            {
+                return;
+            }
+            this.GalleryImage = Images[0];
+            this.Images.RemoveAt(0);
         }
 
         private List<string> GetTags(string v)
