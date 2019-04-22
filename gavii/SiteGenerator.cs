@@ -102,6 +102,7 @@ namespace gavii
         private string GenerateGalleryHtml()
         {
             string gallery = "";
+            int i = 0;
             foreach (Post p in this.Posts)
             {
                 if (p.GalleryImage == null)
@@ -117,8 +118,14 @@ namespace gavii
                     image.Mutate(ctx => ctx.Resize(ro));
                     image.Save(outputUrl + "/thumbnails/" + p.UrlName + p.GalleryImage.Extension);
                 }
-
+                i++;
                 gallery += GetGalleryImageHtmlString(p);
+                if (i == 3)
+                {
+                    gallery += "<div class='clearfix'></div>";
+                    i = 0;
+                };
+                
             }
 
             return gallery;
@@ -127,7 +134,7 @@ namespace gavii
         private string GetGalleryImageHtmlString(Post p)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='col-sm-6 col-md-4'>");
+            sb.Append("<div class='col-xs-6 col-sm-4'>");
             sb.Append("<a class='lightbox' href='{{PostUrl}}'>");
             sb.Append("<img src='thumbnails/{{PostThumb}}' alt='Park'>");
             sb.Append("<div class='overlay'>");
