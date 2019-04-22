@@ -32,7 +32,7 @@ namespace gavii
                 //todo: order by date or name etc
                 foreach (var p in Posts)
                 {
-                    this.Text += @"<li><a href='/" + p + "'>" + p + "</a><br /></li>";
+                    this.Text += @"<li><a href='/page/" + p + "'>" + p + "</a><br /></li>";
                 }
                 this.Text += "</ul>";
             }
