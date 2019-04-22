@@ -1,4 +1,7 @@
-﻿using System;
+﻿using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
+using SixLabors.ImageSharp.Processing;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -18,6 +21,9 @@ namespace gavii
 
         public void GenerateWebsite()
         {
+            //base setup
+            Directory.CreateDirectory(outputUrl + "/thumbnails/");
+
             var layoutHtml = File.ReadAllText(layoutUrl + "_Layout.html");
             var pageLayoutHtml = File.ReadAllText(layoutUrl + "_Page.html");
             var postLayoutHtml = File.ReadAllText(layoutUrl + "_Post.html");
@@ -30,7 +36,7 @@ namespace gavii
 
             //todo: Fill layout with links for posts. For now hardcoded in _Layout.html
 
-            //todo: put html into _aGallery.html and add some kind of templating lang
+            //todo: put html into _Gallery.html and add some kind of templating lang
             StringBuilder sb = new StringBuilder();
             sb.Append("<div class='col-sm-6 col-md-4'>");
             sb.Append("<a class='lightbox' href='{{PostUrl}}'>");
@@ -46,8 +52,12 @@ namespace gavii
                     continue;
 
                 //todo: resize
-                Directory.CreateDirectory(outputUrl + "/thumbnails/");
-                p.GalleryImage.CopyTo(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension, true);
+                using (Image<Rgba32> image = Image.Load(p.GalleryImage.FullName))
+                {
+                    image.Mutate(ctx => ctx.Resize(image.Width / 2, image.Height / 2));
+                    image.Save(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension);
+                }
+
                 gallery += sb.Replace("{{PostThumb}}", p.Name + p.GalleryImage.Extension).Replace("{{Name}}", p.Name).Replace("{{PostUrl}}", "/posts/" + p.Name);
             }
 
