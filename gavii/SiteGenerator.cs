@@ -101,13 +101,16 @@ namespace gavii
 
         private string GenerateGalleryHtml()
         {
-            string gallery = "";
+            string gallery = "<div class='row'>";
+            int i = 0;
             foreach (Post p in this.Posts)
             {
                 if (p.GalleryImage == null)
                     continue;
 
-                //todo: resize
+                i++;
+
+                //resize
                 using (Image<Rgba32> image = Image.Load(p.GalleryImage.FullName))
                 {
                     ResizeOptions ro = new ResizeOptions();
@@ -117,9 +120,29 @@ namespace gavii
                     image.Mutate(ctx => ctx.Resize(ro));
                     image.Save(outputUrl + "/thumbnails/" + p.UrlName + p.GalleryImage.Extension);
                 }
+
                 gallery += GetGalleryImageHtmlString(p);
-              
+
+                if (i == 3)
+                {
+                    //close row add new one
+                    gallery += "</div><div class='row'>";
+                    i = 0;
+                }
             }
+
+            if (this.Posts.Count % 3 > 0)
+            {
+                //add empty posts to make all tiles the same size
+                int postAmount = 3 - (this.Posts.Count % 3);
+
+                for (int a = 0; a < postAmount; a++)
+                {
+                    gallery += "<div class='col-sm'></div>";
+                }
+            }
+
+            gallery += "</div>";//end row
 
             return gallery;
         }
@@ -127,7 +150,7 @@ namespace gavii
         private string GetGalleryImageHtmlString(Post p)
         {
             StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='col-xs-6 col-sm-4'>");
+            sb.Append("<div class='col-sm'>");
             sb.Append("<a class='lightbox' href='{{PostUrl}}'>");
             sb.Append("<img src='thumbnails/{{PostThumb}}' alt='Park'>");
             sb.Append("<div class='overlay'>");
