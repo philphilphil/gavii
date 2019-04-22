@@ -164,6 +164,8 @@ namespace gavii
             {
                 this.Posts.Add(new Post(post));
             }
+
+            this.Posts = this.Posts.ToList().OrderByDescending(x => x.Date).ToList();
         }
     }
 }

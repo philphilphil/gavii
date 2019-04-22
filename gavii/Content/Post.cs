@@ -35,7 +35,7 @@ namespace gavii
             var di = new DirectoryInfo(post);
             this.Images = di.GetFiles("*.*", SearchOption.TopDirectoryOnly).Where(s => s.FullName.EndsWith(".jpg") || s.FullName.EndsWith(".png")).OrderBy(x => x.Name).ToList();
 
-            if(this.Images.Count == 0)
+            if (this.Images.Count == 0)
             {
                 return;
             }
@@ -54,13 +54,15 @@ namespace gavii
 
         private DateTime GetDate(string v)
         {
-
-            if (v.Contains("{now}")) //todo: doesnt make sense unless write back to file
+            DateTime now = new DateTime();
+            var datestring = GetFileContentWithRegex(@"(Date:)(.*)", v).Trim();
+            if (!DateTime.TryParse(datestring, out now))
             {
-                return DateTime.Now;
+                now = DateTime.Now;
             }
 
-            return DateTime.Parse(v);
+            return now;
+
         }
 
 
