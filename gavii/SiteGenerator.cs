@@ -21,64 +21,38 @@ namespace gavii
 
         public void GenerateWebsite()
         {
-            //base setup
+            //Base setup
             Directory.CreateDirectory(outputUrl + "/thumbnails/");
-
             var layoutHtml = File.ReadAllText(layoutUrl + "_Layout.html");
             var pageLayoutHtml = File.ReadAllText(layoutUrl + "_Page.html");
             var postLayoutHtml = File.ReadAllText(layoutUrl + "_Post.html");
             var galleryLayoutHtml = File.ReadAllText(layoutUrl + "_Gallery.html");
             var css = File.ReadAllText(layoutUrl + "style.css");
 
-            //gather all info needed
+            //gather all info needed from setup folders
             GetPages();
             GetPosts();
 
             //todo: Fill layout with links for posts. For now hardcoded in _Layout.html
 
             //generate thumbnails and gallery
-            string gallery = "";
-            foreach (Post p in this.Posts)
-            {
-                if (p.GalleryImage == null)
-                    continue;
-
-                //todo: resize
-                using (Image<Rgba32> image = Image.Load(p.GalleryImage.FullName))
-                {
-                    ResizeOptions ro = new ResizeOptions();
-                    ro.Size = new SixLabors.Primitives.Size(600, 600);
-                    ro.Mode = ResizeMode.Max;
-
-                    image.Mutate(ctx => ctx.Resize(ro));
-                    image.Save(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension);
-                }
-
-                gallery += GetGalleryImageHtmlString(p);
-            }
-
+            string gallery = GenerateGalleryHtml();
             var galleryHtml = galleryLayoutHtml.Replace("{{Images}}", gallery);
 
-            //index page with gallery
+            //Write index page
             var indexPage = layoutHtml.Replace("{{content}}", galleryHtml).Replace("{{cssForwarder}}", "").Replace("{{Title}}", "");
             WriteFile(indexPage, outputUrl + "index.html");
 
-            //css
+            //Write css page
             WriteFile(css, outputUrl + "style.css");
 
-            //pages
-            foreach (var p in this.Pages)
-            {
-                var pageLayout = pageLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
-                var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../").Replace("{{Title}}", " - " + p.Name);
-                string folderPath = outputUrl + p.Name;
+            GeneratePages(layoutHtml, pageLayoutHtml);
 
-                Directory.CreateDirectory(folderPath);
+            GeneratePosts(layoutHtml, postLayoutHtml);
+        }
 
-                WriteFile(completePage, folderPath + "/index.html");
-            }
-
-            //posts
+        private void GeneratePosts(string layoutHtml, string postLayoutHtml)
+        {
             foreach (Post p in this.Posts)
             {
                 var postLayout = postLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
@@ -108,6 +82,45 @@ namespace gavii
 
                 WriteFile(completePost, folderPath + "/index.html");
             }
+        }
+
+        private void GeneratePages(string layoutHtml, string pageLayoutHtml)
+        {
+            foreach (var p in this.Pages)
+            {
+                var pageLayout = pageLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
+                var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../").Replace("{{Title}}", " - " + p.Name);
+                string folderPath = outputUrl + p.Name;
+
+                Directory.CreateDirectory(folderPath);
+
+                WriteFile(completePage, folderPath + "/index.html");
+            }
+        }
+
+        private string GenerateGalleryHtml()
+        {
+            string gallery = "";
+            foreach (Post p in this.Posts)
+            {
+                if (p.GalleryImage == null)
+                    continue;
+
+                //todo: resize
+                using (Image<Rgba32> image = Image.Load(p.GalleryImage.FullName))
+                {
+                    ResizeOptions ro = new ResizeOptions();
+                    ro.Size = new SixLabors.Primitives.Size(600, 600);
+                    ro.Mode = ResizeMode.Max;
+
+                    image.Mutate(ctx => ctx.Resize(ro));
+                    image.Save(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension);
+                }
+
+                gallery += GetGalleryImageHtmlString(p);
+            }
+
+            return gallery;
         }
 
         private string GetGalleryImageHtmlString(Post p)
