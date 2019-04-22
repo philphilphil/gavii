@@ -57,7 +57,7 @@ namespace gavii
             foreach (Post p in this.Posts)
             {
                 var postLayout = postLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
-                string folderPath = outputUrl + "/posts/" + p.Name;
+                string folderPath = outputUrl + "/posts/" + p.UrlName;
                 Directory.CreateDirectory(folderPath);
 
                 //images
@@ -75,7 +75,7 @@ namespace gavii
                     p.GalleryImage.CopyTo(folderPath + "/" + p.GalleryImage.Name, true);
                     p.Images.ForEach(i => i.CopyTo(folderPath + "/" + i.Name, true));
 
-                    postLayout = postLayout.Replace("{{GalleryImage}}", "<img src='" + p.GalleryImage.Name + "' alt='" + p.Name + "'><br />\r\n");
+                    postLayout = postLayout.Replace("{{GalleryImage}}", "<img src='" + p.GalleryImage.Name + "' alt='" + p.UrlName + "'><br />\r\n");
 
                 }
 
@@ -115,7 +115,7 @@ namespace gavii
                     ro.Mode = ResizeMode.Max;
 
                     image.Mutate(ctx => ctx.Resize(ro));
-                    image.Save(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension);
+                    image.Save(outputUrl + "/thumbnails/" + p.UrlName + p.GalleryImage.Extension);
                 }
 
                 gallery += GetGalleryImageHtmlString(p);
@@ -134,7 +134,7 @@ namespace gavii
             sb.Append("<div class='text'>{{Name}}</div></div></a></div>");
 
 
-            return sb.Replace("{{PostThumb}}", p.Name + p.GalleryImage.Extension).Replace("{{Name}}", p.Name).Replace("{{PostUrl}}", "/posts/" + p.Name).ToString();
+            return sb.Replace("{{PostThumb}}", p.UrlName + p.GalleryImage.Extension).Replace("{{Name}}", p.Name).Replace("{{PostUrl}}", "/posts/" + p.UrlName).ToString();
         }
 
         private void WriteFile(string content, string path)

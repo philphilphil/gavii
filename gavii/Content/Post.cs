@@ -10,6 +10,7 @@ namespace gavii
     class Post : ContentReader
     {
         public string Name { get; set; }
+        public string UrlName { get; set; }
         public DateTime Date { get; set; }
         public string GPS { get; set; }
         public List<string> Tags { get; set; }
@@ -21,6 +22,7 @@ namespace gavii
         {
             var postText = File.ReadAllLines(post + "/post.html");
             this.Name = GetFileContentWithRegex(@"(Name:)(.*)", postText[0]).Trim();
+            this.UrlName = this.Name.Replace(" ", "-");
             this.Date = GetDate(postText[1].Trim());
             this.Tags = GetTags(postText[2].Trim());
             this.Text = GetText(5, postText);
@@ -53,7 +55,7 @@ namespace gavii
         private DateTime GetDate(string v)
         {
 
-            if (v.Contains("{now}"))
+            if (v.Contains("{now}")) //todo: doesnt make sense unless write back to file
             {
                 return DateTime.Now;
             }
