@@ -37,12 +37,6 @@ namespace gavii
             //todo: Fill layout with links for posts. For now hardcoded in _Layout.html
 
             //todo: put html into _Gallery.html and add some kind of templating lang
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<div class='col-sm-6 col-md-4'>");
-            sb.Append("<a class='lightbox' href='{{PostUrl}}'>");
-            sb.Append("<img src='thumbnails/{{PostThumb}}' alt='Park'>");
-            sb.Append("<div class='overlay'>");
-            sb.Append("<div class='text'>{{Name}}</div></div></a></div>");
 
             //generate thumbnails for gallery
             string gallery = "";
@@ -54,11 +48,15 @@ namespace gavii
                 //todo: resize
                 using (Image<Rgba32> image = Image.Load(p.GalleryImage.FullName))
                 {
-                    image.Mutate(ctx => ctx.Resize(image.Width / 2, image.Height / 2));
+                    ResizeOptions ro = new ResizeOptions();
+                    ro.Size = new SixLabors.Primitives.Size(600, 600);
+                    ro.Mode = ResizeMode.Max;
+
+                    image.Mutate(ctx => ctx.Resize(ro));
                     image.Save(outputUrl + "/thumbnails/" + p.Name + p.GalleryImage.Extension);
                 }
 
-                gallery += sb.Replace("{{PostThumb}}", p.Name + p.GalleryImage.Extension).Replace("{{Name}}", p.Name).Replace("{{PostUrl}}", "/posts/" + p.Name);
+                gallery += GetGalleryImageHtmlString(p);
             }
 
             var galleryHtml = galleryLayoutHtml.Replace("{{Images}}", gallery);
@@ -112,6 +110,19 @@ namespace gavii
 
                 WriteFile(completePost, folderPath + "/index.html");
             }
+        }
+
+        private string GetGalleryImageHtmlString(Post p)
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<div class='col-sm-6 col-md-4'>");
+            sb.Append("<a class='lightbox' href='{{PostUrl}}'>");
+            sb.Append("<img src='thumbnails/{{PostThumb}}' alt='Park'>");
+            sb.Append("<div class='overlay'>");
+            sb.Append("<div class='text'>{{Name}}</div></div></a></div>");
+
+
+            return sb.Replace("{{PostThumb}}", p.Name + p.GalleryImage.Extension).Replace("{{Name}}", p.Name).Replace("{{PostUrl}}", "/posts/" + p.Name).ToString();
         }
 
         private void WriteFile(string content, string path)
