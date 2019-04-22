@@ -8,13 +8,11 @@ namespace gavii
     class SiteManager
     {
 
-        public void AddNewPost(string Name)
+        public void AddNewSite(string Name)
         {
             CheckIfInSiteDirectory();
 
             Directory.CreateDirectory("Posts/test");
-
-
         }
 
         private void CheckIfInSiteDirectory()

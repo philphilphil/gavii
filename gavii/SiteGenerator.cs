@@ -4,6 +4,7 @@ using SixLabors.ImageSharp.Processing;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 namespace gavii
@@ -30,8 +31,8 @@ namespace gavii
             var css = File.ReadAllText(layoutUrl + "style.css");
 
             //gather all info needed from setup folders
-            GetPages();
             GetPosts();
+            GetPages();
 
             //todo: Fill layout with links for posts. For now hardcoded in _Layout.html
 
@@ -151,7 +152,7 @@ namespace gavii
             var pages = Directory.GetFiles(pagesFolder);
             foreach (string page in pages)
             {
-                this.Pages.Add(new Page(page));
+                this.Pages.Add(new Page(page, this.Posts.Select(x => x.Name).ToList()));
             }
         }
 
