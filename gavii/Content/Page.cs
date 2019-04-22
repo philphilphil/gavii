@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace gavii
 {
@@ -16,7 +17,7 @@ namespace gavii
             var postText = File.ReadAllLines(page);
             this.Name = GetFileContentWithRegex(@"(Name:)(.*)", postText[0]).Trim();
             this.Text = GetText(2, postText);
-            this.Posts = posts;
+            this.Posts = posts.OrderBy(s => s).ToList();
 
             CheckForSpecialTextHandling();
         }
