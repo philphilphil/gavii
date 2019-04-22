@@ -36,9 +36,7 @@ namespace gavii
 
             //todo: Fill layout with links for posts. For now hardcoded in _Layout.html
 
-            //todo: put html into _Gallery.html and add some kind of templating lang
-
-            //generate thumbnails for gallery
+            //generate thumbnails and gallery
             string gallery = "";
             foreach (Post p in this.Posts)
             {
@@ -62,7 +60,7 @@ namespace gavii
             var galleryHtml = galleryLayoutHtml.Replace("{{Images}}", gallery);
 
             //index page with gallery
-            var indexPage = layoutHtml.Replace("{{content}}", galleryHtml).Replace("{{cssForwarder}}", "");
+            var indexPage = layoutHtml.Replace("{{content}}", galleryHtml).Replace("{{cssForwarder}}", "").Replace("{{Title}}", "");
             WriteFile(indexPage, outputUrl + "index.html");
 
             //css
@@ -72,7 +70,7 @@ namespace gavii
             foreach (var p in this.Pages)
             {
                 var pageLayout = pageLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
-                var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../");
+                var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../").Replace("{{Title}}", " - " + p.Name);
                 string folderPath = outputUrl + p.Name;
 
                 Directory.CreateDirectory(folderPath);
@@ -106,7 +104,7 @@ namespace gavii
 
                 }
 
-                var completePost = layoutHtml.Replace("{{content}}", postLayout).Replace("{{cssForwarder}}", "../../");
+                var completePost = layoutHtml.Replace("{{content}}", postLayout).Replace("{{cssForwarder}}", "../../").Replace("{{Title}}", " - " + p.Name);
 
                 WriteFile(completePost, folderPath + "/index.html");
             }
