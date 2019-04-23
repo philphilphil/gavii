@@ -10,7 +10,6 @@ namespace gavii
 
         public void AddNewSite(string Name)
         {
-            CheckIfInSiteDirectory();
 
             Directory.CreateDirectory("Posts/test");
         }
