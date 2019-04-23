@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace gavii
 {
@@ -15,20 +16,34 @@ namespace gavii
         private List<Page> Pages { get; set; }
         private List<Post> Posts { get; set; }
 
-        private readonly string layoutUrl = "federundblatt/Layout/";
-        private readonly string outputUrl = "federundblatt/Output/";
-        private readonly string postsFolder = "federundblatt/posts";
-        private readonly string pagesFolder = "federundblatt/pages";
+        public string LayoutUrl { get; set; }
+
+        public string OutputUrl { get; set; }
+
+        public string PostsFolder { get; set; }
+
+        public string PagesFolder { get; set; }
+
+        private string SiteName { get; set; }
+
+
 
         public void GenerateWebsite()
         {
+            //SiteName = GetSiteName();
+
+            LayoutUrl = "Layout/";
+            OutputUrl = "Output/";
+            PostsFolder = "posts";
+            PagesFolder = "pages";
+
             //Base setup
-            Directory.CreateDirectory(outputUrl + "/thumbnails/");
-            var layoutHtml = File.ReadAllText(layoutUrl + "_Layout.html");
-            var pageLayoutHtml = File.ReadAllText(layoutUrl + "_Page.html");
-            var postLayoutHtml = File.ReadAllText(layoutUrl + "_Post.html");
-            var galleryLayoutHtml = File.ReadAllText(layoutUrl + "_Gallery.html");
-            var css = File.ReadAllText(layoutUrl + "style.css");
+            Directory.CreateDirectory(OutputUrl + "/thumbnails/");
+            var layoutHtml = File.ReadAllText(LayoutUrl + "_Layout.html");
+            var pageLayoutHtml = File.ReadAllText(LayoutUrl + "_Page.html");
+            var postLayoutHtml = File.ReadAllText(LayoutUrl + "_Post.html");
+            var galleryLayoutHtml = File.ReadAllText(LayoutUrl + "_Gallery.html");
+            var css = File.ReadAllText(LayoutUrl + "style.css");
 
             //gather all info needed from setup folders
             GetPosts();
@@ -42,14 +57,34 @@ namespace gavii
 
             //Write index page
             var indexPage = layoutHtml.Replace("{{content}}", galleryHtml).Replace("{{cssForwarder}}", "").Replace("{{Title}}", "");
-            WriteFile(indexPage, outputUrl + "index.html");
+            WriteFile(indexPage, OutputUrl + "index.html");
 
             //Write css page
-            WriteFile(css, outputUrl + "style.css");
+            WriteFile(css, OutputUrl + "style.css");
 
             GeneratePages(layoutHtml, pageLayoutHtml);
 
             GeneratePosts(layoutHtml, postLayoutHtml);
+        }
+
+        private string GetSiteName()
+        {
+            string gaviiConfigFile = ".gaviiSite";
+            if (!File.Exists(gaviiConfigFile))
+            {
+                throw new Exception("Not in a gavii site filder");
+            }
+            var content = File.ReadAllText(gaviiConfigFile);
+            var match = Regex.Match(content, @"(Name:)(.*)");
+
+            if (match.Success && match.Groups.Count > 1)
+            {
+                return match.Groups[2].Value;
+            }
+            else
+            {
+                throw new Exception("Error reading gaviiSite-Config.");
+            }
         }
 
         private void GeneratePosts(string layoutHtml, string postLayoutHtml)
@@ -57,7 +92,7 @@ namespace gavii
             foreach (Post p in this.Posts)
             {
                 var postLayout = postLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
-                string folderPath = outputUrl + "/posts/" + p.UrlName;
+                string folderPath = OutputUrl + "/posts/" + p.UrlName;
                 Directory.CreateDirectory(folderPath);
 
                 //images
@@ -91,7 +126,7 @@ namespace gavii
             {
                 var pageLayout = pageLayoutHtml.Replace("{{Text}}", p.Text).Replace("{{Name}}", p.Name);
                 var completePage = layoutHtml.Replace("{{content}}", pageLayout).Replace("{{cssForwarder}}", "../../").Replace("{{Title}}", " - " + p.Name);
-                string folderPath = outputUrl + p.Name;
+                string folderPath = OutputUrl + p.Name;
 
                 Directory.CreateDirectory(folderPath);
 
@@ -118,7 +153,7 @@ namespace gavii
                     ro.Mode = ResizeMode.Max;
 
                     image.Mutate(ctx => ctx.Resize(ro));
-                    image.Save(outputUrl + "/thumbnails/" + p.UrlName + p.GalleryImage.Extension);
+                    image.Save(OutputUrl + "/thumbnails/" + p.UrlName + p.GalleryImage.Extension);
                 }
 
                 gallery += GetGalleryImageHtmlString(p);
@@ -172,7 +207,7 @@ namespace gavii
         private void GetPages()
         {
             this.Pages = new List<Page>();
-            var pages = Directory.GetFiles(pagesFolder);
+            var pages = Directory.GetFiles(PagesFolder);
             foreach (string page in pages)
             {
                 this.Pages.Add(new Page(page, this.Posts.Select(x => x.Name).ToList()));
@@ -182,9 +217,12 @@ namespace gavii
         private void GetPosts()
         {
             this.Posts = new List<Post>();
-            var posts = Directory.GetDirectories(postsFolder);
+            var posts = Directory.GetDirectories(PostsFolder);
             foreach (string post in posts)
             {
+                if (post.Replace(PostsFolder, "").StartsWith("\\-"))
+                    continue;
+
                 this.Posts.Add(new Post(post));
             }
 
