@@ -29,3 +29,6 @@ To add images to a post just drop them into the post folder. The gallery image w
 - Post folders with a starting "-" will be ignored
 - Posts are sorted by date, newest first
 - GPS and Tags are not yet working
+
+## Generating the website
+Just call gavii in a website directory (the one which was created with the "new" command). Output will be generated and put into "Output"
