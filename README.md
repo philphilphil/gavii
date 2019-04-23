@@ -28,3 +28,4 @@ To add images to a post just drop them into the post folder. The gallery image w
 ### General things
 - Post folders with a starting "-" will be ignored
 - Posts are sorted by date, newest first
+- GPS and Tags are not yet working
