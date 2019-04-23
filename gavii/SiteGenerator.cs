@@ -210,7 +210,7 @@ namespace gavii
             var pages = Directory.GetFiles(PagesFolder);
             foreach (string page in pages)
             {
-                this.Pages.Add(new Page(page, this.Posts.Select(x => x.Name).ToList()));
+                this.Pages.Add(new Page(page, this.Posts));
             }
         }
 

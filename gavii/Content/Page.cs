@@ -10,14 +10,14 @@ namespace gavii
         public string Name { get; set; }
         public string Text { get; set; }
 
-        private List<string> Posts { get; set; }
+        private List<Post> Posts { get; set; }
 
-        public Page(string page, List<string> posts)
+        public Page(string page, List<Post> posts)
         {
             var postText = File.ReadAllLines(page);
             this.Name = GetFileContentWithRegex(@"(Name:)(.*)", postText[0]).Trim();
             this.Text = GetText(2, postText);
-            this.Posts = posts.OrderBy(s => s).ToList();
+            this.Posts = posts.OrderBy(s => s.Name).ToList();
 
             CheckForSpecialTextHandling();
         }
@@ -32,7 +32,7 @@ namespace gavii
                 //todo: order by date or name etc
                 foreach (var p in Posts)
                 {
-                    this.Text += @"<li><a href='/page/" + p + "'>" + p + "</a><br /></li>";
+                    this.Text += @"<li><a href='/posts/" + p.UrlName + "'>" + p.Name + "</a><br /></li>";
                 }
                 this.Text += "</ul>";
             }
