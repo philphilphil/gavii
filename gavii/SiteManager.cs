@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Text;
 
 namespace gavii
@@ -10,13 +11,14 @@ namespace gavii
 
         public void AddNewSite(string Name)
         {
+            var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
 
-            Directory.CreateDirectory("Posts/test");
+            Directory.CreateDirectory(executingPath + "\\" + Name);
         }
 
         private void CheckIfInSiteDirectory()
         {
-          //  throw new Exception("You are not in the directory of a site.");
+            //  throw new Exception("You are not in the directory of a site.");
         }
     }
 }
