@@ -39,4 +39,4 @@ Just call gavii in a website directory (the one which was created with the "new"
 Download the release for windows (or build it yourself in a self contained release build).
 Put the files in a sensible folder (eg. C:\Program Files\gavii). [Add the folder to your path.](https://docs.microsoft.com/en-us/previous-versions/office/developer/sharepoint-2010/ee537574(v%3Doffice.14))
 ## Linux
-Unpack, place somewhere sensioble and add to your ~/.bashrc with "export PATH=$PATH:</path/to/gavii>"
+Unpack, place somewhere sensible and add to your ~/.bashrc with "export PATH=$PATH:</path/to/gavii>"
