@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 
@@ -32,10 +33,12 @@ namespace gavii
         {
             //SiteName = GetSiteName();
 
-            LayoutUrl = "Layout/";
-            OutputUrl = "Output/";
-            PostsFolder = "posts";
-            PagesFolder = "pages";
+            var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\";
+
+            LayoutUrl = executingPath + "Layout/";
+            OutputUrl = executingPath + "Output/";
+            PostsFolder = executingPath + "posts";
+            PagesFolder = executingPath + "pages";
 
             //Base setup
             Directory.CreateDirectory(OutputUrl + "/thumbnails/");

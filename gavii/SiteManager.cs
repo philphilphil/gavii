@@ -11,8 +11,7 @@ namespace gavii
 
         public void AddNewSite(string Name)
         {
-            var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location);
-
+            var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); 
             Directory.CreateDirectory(executingPath + "\\" + Name);
         }
 
