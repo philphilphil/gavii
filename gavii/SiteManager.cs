@@ -11,14 +11,16 @@ namespace gavii
 
         public void AddNewSite(string Name)
         {
-            var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location); 
+            string executingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), Name);
+            string exampleSitePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"ExampleSite");
 
-            //create directories
-            Directory.CreateDirectory(executingPath + "\\" + Name);
-            Directory.CreateDirectory(executingPath + "\\" + Name + "\\Layout");
-            Directory.CreateDirectory(executingPath + "\\" + Name + "\\pages");
-            Directory.CreateDirectory(executingPath + "\\" + Name + "\\posts\\1-Eichhoernchen");
-            Directory.CreateDirectory(executingPath + "\\" + Name + "\\posts\\-EmptyPost");
+            //Now Create all of the directories
+            foreach (string dirPath in Directory.GetDirectories(exampleSitePath, "*", SearchOption.AllDirectories))
+                Directory.CreateDirectory(dirPath.Replace(exampleSitePath, executingPath));
+
+            //Copy all the files & Replaces any files with the same name
+            foreach (string newPath in Directory.GetFiles(exampleSitePath, "*.*", SearchOption.AllDirectories))
+                File.Copy(newPath, newPath.Replace(exampleSitePath, executingPath), true);
         }
 
         private void CheckIfInSiteDirectory()
