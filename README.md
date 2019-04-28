@@ -1,6 +1,6 @@
 # gavii
 gavii generates a static website for collections of things based on images.
-
+![](gavii_example.gif)
 ## Creating a new website
 Create a new site with "gavii new SiteName". gavii will create a new folder named SiteName with the following strucutre inside:
 
