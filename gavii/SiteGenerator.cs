@@ -31,7 +31,7 @@ namespace gavii
 
         public void GenerateWebsite()
         {
-            //SiteName = GetSiteName();
+            SiteName = GetSiteName();
 
             var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\";
 
@@ -75,7 +75,7 @@ namespace gavii
             string gaviiConfigFile = ".gaviiSite";
             if (!File.Exists(gaviiConfigFile))
             {
-                throw new Exception("Not in a gavii site filder");
+                throw new Exception("Not in a gavii site folder.");
             }
             var content = File.ReadAllText(gaviiConfigFile);
             var match = Regex.Match(content, @"(Name:)(.*)");
