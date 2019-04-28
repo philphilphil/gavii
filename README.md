@@ -3,6 +3,7 @@ gavii generates a static website for collections of things based on images.
 
 ## Creating a new website
 Create a new site with "gavii new SiteName". gavii will create a new folder named SiteName with the following strucutre inside:
+
 For layout of the website:
 - Layout //Where the html layout lays
 - - _Layout.html //Base Layout
