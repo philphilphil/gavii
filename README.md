@@ -3,6 +3,7 @@ gavii generates a static website for collections of things based on images.
 
 ## Creating a new website
 Create a new site with "gavii new SiteName". gavii will create a new folder named SiteName with the following strucutre inside:
+
 For layout of the website:
 - Layout //Where the html layout lays
 - - _Layout.html //Base Layout
@@ -29,3 +30,6 @@ To add images to a post just drop them into the post folder. The gallery image w
 - Post folders with a starting "-" will be ignored
 - Posts are sorted by date, newest first
 - GPS and Tags are not yet working
+
+## Generating the website
+Just call gavii in a website directory (the one which was created with the "new" command). Output will be generated and put into "Output"
