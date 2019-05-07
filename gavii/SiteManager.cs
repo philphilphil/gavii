@@ -11,7 +11,8 @@ namespace gavii
 
         public void AddNewSite(string Name)
         {
-            string executingPath = Path.Combine(Path.GetDirectoryName(Assembly.GetEntryAssembly().Location), Name);
+            Directory.CreateDirectory(Environment.CurrentDirectory + "\\" + Name);
+            string executingPath = Environment.CurrentDirectory + "\\" + Name;
             string exampleSitePath = Path.Combine(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location), @"ExampleSite");
 
             foreach (string dirPath in Directory.GetDirectories(exampleSitePath, "*", SearchOption.AllDirectories))
