@@ -33,7 +33,7 @@ namespace gavii
         {
             SiteName = GetSiteName();
 
-            var executingPath = Path.GetDirectoryName(Assembly.GetEntryAssembly().Location) + "\\";
+            var executingPath = Environment.CurrentDirectory + "\\";
 
             LayoutUrl = executingPath + "Layout/";
             OutputUrl = executingPath + "Output/";
